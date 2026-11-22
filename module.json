@@ -1,0 +1,89 @@
+{
+  "name": "Keynote",
+  "type": "OS",
+  "path": "Software",
+  "version": "1.0.0",
+  "description": "Control Apple Keynote via JXA (osascript) and receive slide telemetry JSON over WebSocket",
+  "hasInput": true,
+  "hasOutput": true,
+  "hideDefaultCommands": true,
+  "hideDefaultParameters": [
+    "osInfo",
+    "networkInfo",
+    "appControl",
+    "appControlStatus",
+    "pingIPs",
+    "pingStatus",
+    "listIPs",
+    "pingInterval",
+    "pingTimeout",
+    "terminate",
+    "crashed"
+  ],
+  "parameters": {
+    "WebSocket URL": {
+      "type": "String",
+      "default": "ws://127.0.0.1:8080",
+      "description": "Chataigne WebSocket Server URL to receive JSON slide details"
+    },
+    "Auto Poll": {
+      "type": "Boolean",
+      "default": false,
+      "description": "Periodically poll Keynote slide state in the background"
+    },
+    "Poll Interval": {
+      "type": "Float",
+      "default": 0.5,
+      "min": 0.1,
+      "max": 10.0,
+      "description": "Polling interval in seconds when Auto Poll is enabled"
+    },
+    "Refresh Status": {
+      "type": "Trigger",
+      "description": "Query Keynote immediately and send slide JSON over WebSocket"
+    }
+  },
+  "scripts": [
+    "keynote.js"
+  ],
+  "commands": {
+    "Next Slide": {
+      "menu": "",
+      "callback": "nextSlide"
+    },
+    "Previous Slide": {
+      "menu": "",
+      "callback": "previousSlide"
+    },
+    "Go to Slide": {
+      "menu": "",
+      "callback": "gotoSlide",
+      "parameters": {
+        "Slide Number": {
+          "type": "Integer",
+          "default": 1,
+          "min": 1,
+          "max": 9999
+        }
+      }
+    },
+    "Start Presentation": {
+      "menu": "",
+      "callback": "startPresentation",
+      "parameters": {
+        "From Current Slide": {
+          "type": "Boolean",
+          "default": true
+        }
+      }
+    },
+    "Stop Presentation": {
+      "menu": "",
+      "callback": "stopPresentation"
+    },
+    "Get Slide Info": {
+      "menu": "",
+      "callback": "refreshStatus"
+    }
+  }
+}
