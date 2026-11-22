@@ -4,6 +4,7 @@
   "path": "Software",
   "version": "1.0.0",
   "description": "Control Apple Keynote via JXA (osascript) and receive slide telemetry JSON over WebSocket",
+  "url":"https://github.com/UUoocl/Keynote-Chataigne-Module",
   "hasInput": true,
   "hasOutput": true,
   "hideDefaultCommands": true,
