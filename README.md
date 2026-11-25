@@ -1,21 +1,21 @@
 # Keynote Custom Module (OS + JXA + WebSocket Return)
 
-A Chataigne custom module based on the `OS` module that controls Apple Keynote via JXA (`osascript -l JavaScript`) non-blocking and returns a JSON payload of slide details over WebSocket.
+A Chataigne custom module based on the `OS` module that controls Apple Keynote via JXA (`osascript -l JavaScript`) non-blocking and returns a JSON payload of slide details over WebSocket to the companion [Keynote-Response-Chataigne-Module](https://github.com/UUoocl/Keynote-Response-Chataigne-Module).
 
 ## Architecture
 
 ```
-Chataigne (Apple Shortcuts / OS Module)
+Chataigne (Keynote / OS Module)
   │  local.launchProcess(fullCmd, 0)  [non-blocking background thread]
   ▼
-/usr/bin/python3  (hex-encoded bootstrap & packed args)
-  ├──▶ /usr/bin/shortcuts run  
-  │         └── captures stdout & parses JSON if valid
+/usr/bin/python3  (hex-encoded bootstrap & JXA script)
+  ├──▶ osascript -l JavaScript (Apple Keynote JXA)
+  │         └── controls Keynote & returns slide telemetry JSON
   └──▶ WebSocket client (stdlib socket)
             └── sends JSON text frame + Close frame
                   ▼
-Chataigne (WebSocket Server, Protocol: JSON)
-  └── parses JSON into live Chataigne Values
+Chataigne (Keynote Response / WebSocket Server, Protocol: JSON)
+  └── parses JSON into pre-declared & dynamic Chataigne Values + Triggers
 ```
 
 1. **Non-blocking execution**: `keynote.js` calls `local.launchProcess(..., 0)` so `OSModule` runs commands on its background thread without pausing Chataigne's UI.
@@ -58,9 +58,8 @@ ln -s "$(pwd)/custom modules/Keynote" ~/Documents/Chataigne/modules/Keynote
 
 ## Setup in Chataigne
 
-1. Add **Protocol → WebSocket Server**:
-   - Set **Local Port** (e.g. `8080`).
-   - Set **Protocol** to `JSON`.
+1. Add **Software → Keynote Response** (companion module: [Keynote-Response-Chataigne-Module](https://github.com/UUoocl/Keynote-Response-Chataigne-Module)) — or **Protocol → WebSocket Server** with **Protocol** set to `JSON`:
+   - Default **Local Port** is `8080`.
 2. Add **Software → Keynote**:
    - Set **WebSocket URL** to `ws://127.0.0.1:8080` (matching the WebSocket Server port).
    - Optionally enable **Auto Poll** and set **Poll Interval** (seconds).
